@@ -1,23 +1,31 @@
+# This script scrape the moon changing phases (full, new) from timeanddate.com
+# And print the information.
+# This was 
+
 import urllib2
 from BeautifulSoup import BeautifulSoup
 
-def GetIt():
-    page = 'https://www.timeanddate.com/moon/phases/'
-    soup = BeautifulSoup(urllib2.urlopen(page).read())
+def GetPhases():
+    # Get the page data
+    source = 'https://www.timeanddate.com/moon/phases/'
+    soup = BeautifulSoup(urllib2.urlopen(source).read())
 
-    print '\nLets get the next moon changes\n'
-    
-    # Get the rows of the table tha contains the moon phases
+    # Get the rows of the table that contains the moon phases
     therows = soup('table', {'id': 'mn-cyc'})[0].tbody('tr')
-    # Get all the cell from last row that contains the date of occurence
+    # The first row contains the name of the event (Full Moon, New Moon, ...)
+    events_row = therows[0]
+    # The third row contains the dates and time of the occuring events
+    # Get all the cell from that third row
     date_tabledata = therows[2].findChildren('td')
 
-    for index, td in enumerate(therows[0]):
-        phase = ''.join(td.a.string.lower().split(' '))
-        if phase in ['fullmoon', 'newmoon']:
-            print phase, date_tabledata[index].text
-
-    print '\n'
+    # Loop through all phases
+    for index, td in enumerate(events_row):
+        phase_name = td.a.string
+        # Check the phase name in lower case without spaces
+        if ''.join(phase_name.lower().split(' ')) in ['fullmoon', 'newmoon']:
+            # It is a full or new moon, get the date without the time
+            date_occurence = date_tabledata[index].text[:-5]
+            print phase_name, date_occurence
 
 if __name__ == "__main__":
-    GetIt()
+    GetPhases()
