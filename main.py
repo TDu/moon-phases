@@ -6,10 +6,13 @@ import urllib2
 from BeautifulSoup import BeautifulSoup
 
 def GetPhases():
-    # Get the page data
+    # Set the source of the information
     source = 'https://www.timeanddate.com/moon/phases/'
-    soup = BeautifulSoup(urllib2.urlopen(source).read())
-
+    req = urllib2.Request(source)
+    # Set http header to get the page in english
+    req.add_header('Accept-Language', 'en-US')
+    # Get the page data
+    soup = BeautifulSoup(urllib2.urlopen(req).read())
     # Get the rows of the table that contains the moon phases
     therows = soup('table', {'id': 'mn-cyc'})[0].tbody('tr')
     # The first row contains the name of the event (Full Moon, New Moon, ...)
