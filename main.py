@@ -1,6 +1,5 @@
 # This script scrape the moon changing phases (full, new) from timeanddate.com
 # And print the information.
-# This was 
 
 import urllib2
 from BeautifulSoup import BeautifulSoup
